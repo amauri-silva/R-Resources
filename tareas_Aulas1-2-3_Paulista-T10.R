@@ -133,6 +133,52 @@ betweenness(compras1,gmode="twomode")
     # Utilizando a Rede Two Mode do arquivo Rede Two Mode_Tarefa Aulas 1, 2 e 3_Paulista T10.xlsx descreva sua estrutura
     # de componentes, nós, arestas, centralidades. Faça pequenas modificações na tabela e veja seus resultados.
 
+# Leitura do arquivo
+# Base original
+compras <- read.table("c:/TRabalho/Rede Two Mode_Tarefa Aulas 1, 2 e 3_Paulista T10_original.csv",header=TRUE,sep = ";", dec=",")
+View(compras)
+
+#Base Alterada
+compras1 <- read.table("c:/TRabalho/Rede Two Mode_Tarefa Aulas 1, 2 e 3_Paulista T10.csv",header=TRUE,sep = ";", dec=",")
+View(compras)
+
+# caso compras seja um objeto tibble, convertÃª-lo de volta para dataframe
+compras <- as.data.frame(compras)
+
+# Adaptando o data.frame compras para que possa servir para a montagem da rede
+gcompras <- compras[,2:21]
+rownames(gcompras) <- compras[,1]
+View(gcompras)
+
+# Construindo a rede a partir da matriz de rela??es (0 e 1)
+gplot(gcompras)
+gplot(gcompras,gmode="twomode",displaylabels = TRUE)
+gplot(gcompras,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE)
+
+# Explorando a rede
+degree(gcompras,gmode="twomode",cmode="indegree")
+closeness(gcompras,gmode="twomode")
+betweenness(gcompras,gmode="twomode")
+
+# Aprimorando a representa??o da rede
+gplot(gcompras,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(gcompras,gmode="twomode")*3)
+
+#densidade
+gden(gcompras, g=NULL, diag=FALSE, mode="graph", ignore.eval=FALSE)
+
+
+#eficiência
+efficiency(gcompras, g=NULL, diag=FALSE)
+
+# ## Explorar trocando os valores dos parâmetros
+
+clique.census(gcompras, mode = "graph", tabulate.by.vertex = FALSE,
+              clique.comembership = "sum", enumerate = FALSE,
+              na.omit = TRUE)
+
 
 
 
