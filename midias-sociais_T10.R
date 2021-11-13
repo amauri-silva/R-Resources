@@ -20,6 +20,15 @@ install.packages("lubridate")
 library(lubridate)
 install.packages("dplyr")
 library(dplyr)
+install.packages("stringr")
+library(stringr)
+install.packages("tidytext")
+library(tidytext)
+install.packages("topicmodels")
+library(topicmodels)
+install.packages("ggplot2")
+library(ggplot2)
+
 
 # :::Limpa os dados da memória
 rm(list = ls())
@@ -56,11 +65,6 @@ View(twitters)
 # 3) (Aprendiz.N.Superv.) - Análise de Sentimento.
 # (Isabela)Analise-1: geral
 # (Marina) Analise-2: por ano (2014 - 2021)
-
-install.packages("stringr")
-library(stringr)
-install.packages("tidytext")
-library(tidytext)
 
 twitters_2 <- twitters
 nrow(twitters_2)
@@ -107,10 +111,106 @@ twitters_ano %>% ggplot(aes(x = year, y = sentimento, color = row)) +geom_col()
 # 4) (Aprendiz.N.Superv.) - Lei de Zipf. TF-IDF
 # Analise-1: geral
 
-
-# (Amauri)
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # 5) (Aprendiz.N.Superv.) - Topic Modeling (Clusterização de Documentos e Palavras)
-# Analise-1: geral (Com diferentes números de grupo (valor de K))
+
+# 1°:::::::Etapa: Prepara os dados para gerar a matriz (DTM)
+twitters_list = select(twitters, -tweet, -date)
+# Convertendo a coluna year para inteiro
+twitters_list$year = as.integer(twitters_list$year)
+# Reordenando as colunas
+twitters_list = twitters_list[, c(3, 1, 2)]
+
+View(twitters_list)
+sapply(twitters_list, class)
+
+# Fazendo um cast para gerar o objeto DTM (DocumentTermMatrix)
+twitter_dtm <- twitters_list %>%
+  cast_dtm(target, insult, year)
+
+View(twitter_dtm)
+
+
+# 2°::::::::Etapa: Gerando cluster (K=2)
+ap_lda <- LDA(twitter_dtm, k = 2, control = list(seed = 1234))
+
+ap_topics_beta <-tidy(ap_lda, matrix = "beta")
+ap_topics_beta
+tidy(ap_lda, matrix = "gamma")
+
+# plot 1
+top_terms <- ap_topics_beta %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+# Matriz beta (Maiores betas)::::::::::::::::::::::::::::::
+top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE, ) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered() +
+  theme(axis.text = element_text(size = 24))
+
+# Matriz beta (palavra-topico) - Maiores diferenciais
+tidy(ap_lda, matrix = "beta") %>%
+  mutate(topic = paste("topico",topic,sep="")) %>%
+  spread(key=topic, value=beta) %>%
+  filter(topico1>0.001 | topico2>0.001) %>%
+  mutate(beta_spread = log10(topico2/topico1)) %>%
+  group_by(topico = beta_spread>0) %>%
+  top_n(10, abs(beta_spread)) %>%
+  ggplot(aes(x=reorder(term,beta_spread), y=beta_spread)) +
+  geom_col() + coord_flip() +
+  theme(axis.text = element_text(size = 18))
+
+
+# 2°::::::::Gerando cluster (K=4) ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+apk4_lda <- LDA(twitter_dtm, k = 4, control = list(seed = 1234))
+
+apk4_topics_beta <-tidy(apk4_lda, matrix = "beta")
+apk4_topics_beta
+tidy(apk4_lda, matrix = "gamma")
+
+# plot 1
+top_terms <- apk4_topics_beta %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered() +
+  theme(axis.text = element_text(size = 14))
+
+
+# Matriz beta (Maiores betas)::::::::::::::::::::::::::::::
+tidy(apk4_lda, matrix = "beta") %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  ggplot(aes(x=reorder(term,beta), y=beta)) +
+  geom_col() +
+  facet_wrap(~topic, scales="free_y") +
+  coord_flip()+
+  theme(axis.text = element_text(size = 14))
+
+# Matriz beta (palavra-topico) - Maiores diferenciais
+tidy(apk4_lda, matrix = "beta") %>%
+  mutate(topic = paste("topico",topic,sep="")) %>%
+  spread(key=topic, value=beta) %>%
+  filter(topico1>0.001 | topico2>0.001) %>%
+  mutate(beta_spread = log10(topico2/topico1)) %>%
+  group_by(topico = beta_spread>0) %>%
+  top_n(10, abs(beta_spread)) %>%
+  ggplot(aes(x=reorder(term,beta_spread), y=beta_spread)) +
+  geom_col() + coord_flip()
 
 
 
