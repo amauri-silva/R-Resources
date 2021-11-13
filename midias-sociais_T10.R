@@ -64,6 +64,38 @@ View(twitters)
 
 # 3) (Aprendiz.N.Superv.) - Análise de Sentimento.
 # (Isabela)Analise-1: geral
+
+#removendo as colunas que não vão ser usadas
+twitters_2 <- twitters %>% select (-target, -insult)
+nrow(twitters_2)
+
+#deduplicando os tweets
+twitters_word <- unique(twitters_2)
+
+#atribuindo uma identificação para cada tweet
+for (i in 1:nrow(twitters_word)) {
+  twitters_word$qtd_tweet[i] <- i
+}
+
+#abrindo cada tweet por palavra e definindo um sentimento (dicionário bing)
+twitters_word <- unnest_tokens(twitters_word, input = tweet, output = word) 
+twitters_word <- twitters_word %>% inner_join(get_sentiments("bing"), by = c("word" = "word"))
+
+#abrindo os tweets por sentimento
+twitters_word <- twitters_word %>% count(qtd_tweet, sentiment) %>% spread(key = sentiment, value = n)
+
+#trocando NA por 0, para cálculo do sentimento líquido
+twitters_word$negative[which(is.na(twitters_word$negative))] <- 0
+twitters_word$positive[which(is.na(twitters_word$positive))] <- 0
+
+#calculando o sentimento líquido
+twitters_word$sentimento <- twitters_word$positive - twitters_word$negative
+twitters_word <- twitters_word %>% select (-positive, -negative)
+
+#visão geral de sentimento por tweet
+twitters_word %>% ggplot(aes(x = qtd_tweet, y = sentimento, fill= sentimento)) + geom_col() 
+
+
 # (Marina) Analise-2: por ano (2014 - 2021)
 
 twitters_2 <- twitters
