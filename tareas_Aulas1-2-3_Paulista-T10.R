@@ -133,6 +133,55 @@ betweenness(compras1,gmode="twomode")
     # Utilizando a Rede Two Mode do arquivo Rede Two Mode_Tarefa Aulas 1, 2 e 3_Paulista T10.xlsx descreva sua estrutura
     # de componentes, nós, arestas, centralidades. Faça pequenas modificações na tabela e veja seus resultados.
 
+# :::Importação das libs
+install.packages("Rtools")
+install.packages("network")
+library(net
+install.packages("sna")
+library(sna)
+install.packages("igraph")
+library(igraph)
+install.packages("rgl")
+library(rgl)
+install.packages("dplyr")
+library(dplyr)
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("ggplot2")
+library(ggplot2)
+
+# Le o arquivo com as informações de compras
+compras <- read.csv("C:/Users/marcia.silva/Desktop/Aulas MBA/Mineração de dados/Trabalho/Rede Two Mode_Tarefa Aulas 1, 2 e 3_Paulista T10.csv", sep=";")
+View(`compras`)
+
+# caso compras seja um objeto tibble, convertê-lo de volta para dataframe
+compras <- as.data.frame(compras)
+
+# Adaptando o data.frame compras para que possa servir para a montagem da rede
+compras2 <- compras[,2:20]
+rownames(compras2) <- compras[,1]
+View(`compras2`)
+
+# Construindo a rede a partir da matriz de relações (0 e 1)
+teste <- function(compras2) {
+  gplot(compras2)
+  gplot(compras2,gmode="twomode",displaylabels = TRUE)
+  gplot(compras2,gmode="twomode",displaylabels = TRUE,
+        edge.col="gray",label.cex = 0.7,usearrows=FALSE)
+}
+
+# Aprimorando a representação da rede
+gplot(compras2,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(compras2,gmode="twomode")*3)
+
+# Explorando a rede
+
+degree(compras2,gmode="twomode",cmode="indegree")
+
+closeness(compras2,gmode="twomode")
+
+betweenness(compras2,gmode="twomode")
 
 
 
