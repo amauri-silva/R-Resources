@@ -1,0 +1,105 @@
+# Clean all thigns on memory
+rm(list = ls())
+#Encoding(df) = "UTF-8"
+
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+
+clientes = read.csv("E:/r-resource/Bweb/base_clientes.csv", sep = ",", stringsAsFactors = TRUE)
+summary(clientes)
+str(clientes)
+View(clientes)
+
+#Missing Values ----------------------------------------------------------------
+sum(is.na(clientes))
+
+# Total de linhas contendo valor vazio
+sum(clientes == "")
+
+# Matriz de correlação das veriaveis -------------------------------------------
+corr_matrix  = select(clientes, c(-id_cliente, -persona))
+View(df_corr)
+str(df_corr)
+corr_matrix = cor(df_corr[])
+
+corr_matrix = round(corr_matrix, 3)
+corr_matrix
+
+
+
+# ==============================================================================
+# Analise univariada AMAURI-----------------------------------------------------
+
+proba <- ggplot(clientes, aes(x=persona, fill=persona)) +
+  geom_bar() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  xlab(size_sum())
+proba
+
+engaj <- ggplot(clientes, aes(x=engajamento, fill=persona, )) +
+  geom_bar() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))
+engaj
+
+# Plota os dois grádicos
+grid.arrange(engaj , proba)
+
+
+
+# Analise BIVARIADA AMAURI------------------------------------------------------
+
+enga_box <-ggplot(clientes, aes(x=persona, y=engajamento, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))
+enga_box
+
+enga_bar <- ggplot(clientes, aes(x=persona, y=engajamento, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))
+enga_bar
+
+# Plota os dois grádicos
+grid.arrange(enga_box , enga_bar)
+
+
+
+compra_box <- ggplot(clientes, aes(x=persona, y=compras_60_dias, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14))
+compra_box
+
+compra_bar <- ggplot(clientes, aes(x=persona, y=compras_60_dias, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14))
+compra_bar
+
+# Plota os dois grádicos
+grid.arrange(compra_box , compra_bar)
+
+
+
+proba_box <- ggplot(clientes, aes(x=persona, y=proba, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14))
+proba_box
+
+proba_bar <- ggplot(clientes, aes(x=persona, y=proba, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14))
+proba_bar
+
+# Plota os dois grádicos
+grid.arrange(proba_box , proba_bar)
+
+
+# ==============================================================================
+# Analise univariada CAIO ------------------------------------------------------
+# Analise BIVARIADA CAIO -------------------------------------------------------
+
+
+
+
+
