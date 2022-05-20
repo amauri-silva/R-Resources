@@ -13,24 +13,6 @@ summary(clientes)
 str(clientes)
 View(clientes)
 
-# Selecionando 100 Clientes
-clientes_100 = clientes[sample(nrow(clientes), 100),]
-View(clientes_100)
-
-proba <- ggplot(clientes_100, aes(x=persona, fill=persona)) +
-  geom_bar() +
-  theme(text = element_text(size = 14), axis.text = element_text(size = 14))
-proba
-
-
-
-
-
-
-
-
-
-
 
 #Missing Values ----------------------------------------------------------------
 sum(is.na(clientes))
@@ -46,6 +28,17 @@ corr_matrix = cor(df_corr[])
 
 corr_matrix = round(corr_matrix, 3)
 corr_matrix
+
+
+# Selecionando 100 Clientes Aleatoriamente -------------------------------------
+clientes_100 = clientes[sample(nrow(clientes), 100),]
+View(clientes_100)
+
+proba <- ggplot(clientes_100, aes(x=persona, fill=persona)) +
+  geom_bar() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))
+proba
+
 
 
 
