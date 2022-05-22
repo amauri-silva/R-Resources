@@ -131,7 +131,34 @@ ggplot(data = clientes, aes(x = compras_60_dias)) +
 
 # Analise BIVARIADA CAIO -------------------------------------------------------
 
+#Engajamenbto X Compras últimos 60 dias
 
+ggplot(data = clientes, aes(x = engajamento, y = compras_60_dias)) + 
+  geom_point(position = "jitter", color = "dodgerblue") +
+  geom_smooth(method = lm, se = F)+
+  xlab("Engajamento") +
+  ylab("Compras últimos 60 dias") +
+  theme(legend.position = "right")
+
+
+#Engajamenbto X Probabilidade de lift
+
+ggplot(data = clientes, aes(x = engajamento, y = proba)) + 
+  geom_point(position = "jitter", color = "dodgerblue") +
+  geom_smooth(method = lm, se = F)+
+  xlab("Engajamento") +
+  ylab("Probabilidade de Lift") +
+  theme(legend.position = "right")
+
+
+#Compras últimos 60 dias X Probabilidade de lift
+
+ggplot(data = clientes, aes(x = compras_60_dias, y = proba)) + 
+  +   geom_point(position = "jitter", color = "dodgerblue") +
+  +   geom_smooth(method = lm, se = F)+
+  +   xlab("Compras últimos 60 dias") +
+  +   ylab("Probabilidade de Lift") +
+  +   theme(legend.position = "right")
 
 
 
