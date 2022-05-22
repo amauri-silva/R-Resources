@@ -20,7 +20,7 @@ sum(is.na(clientes))
 # Total de linhas contendo valor vazio
 sum(clientes == "")
 
-# Matriz de correla��o das veriaveis -------------------------------------------
+# Matriz de correlação das veriaveis -------------------------------------------
 corr_matrix  = select(clientes, c(-id_cliente, -persona))
 View(df_corr)
 str(df_corr)
@@ -56,7 +56,7 @@ engaj <- ggplot(clientes, aes(x=engajamento, fill=persona, )) +
   theme(text = element_text(size = 14), axis.text = element_text(size = 14))
 engaj
 
-# Plota os dois gr�dicos
+# Plota os dois grádicos
 grid.arrange(engaj , proba)
 
 
@@ -73,7 +73,7 @@ enga_bar <- ggplot(clientes, aes(x=persona, y=engajamento, fill=persona)) +
   theme(text = element_text(size = 14), axis.text = element_text(size = 14))
 enga_bar
 
-# Plota os dois gr�dicos
+# Plota os dois grádicos
 grid.arrange(enga_box , enga_bar)
 
 
@@ -88,7 +88,7 @@ compra_bar <- ggplot(clientes, aes(x=persona, y=compras_60_dias, fill=persona)) 
   theme(text = element_text(size = 14))
 compra_bar
 
-# Plota os dois gr�dicos
+# Plota os dois grádicos
 grid.arrange(compra_box , compra_bar)
 
 
@@ -103,12 +103,32 @@ proba_bar <- ggplot(clientes, aes(x=persona, y=proba, fill=persona)) +
   theme(text = element_text(size = 14))
 proba_bar
 
-# Plota os dois gr�dicos
+# Plota os dois grádicos
 grid.arrange(proba_box , proba_bar)
 
 
 # ==============================================================================
 # Analise univariada CAIO ------------------------------------------------------
+
+#Compras_60_dias
+
+ggplot(data = clientes, aes(x = compras_60_dias)) + 
+  geom_histogram(binwidth = 10, color = "white",fill = "dodgerblue", position = "dodge") +
+  xlab("Compras") +
+  ylab("Frequencia") +
+  scale_x_continuous(limits = c(0,250), breaks = seq(0,250, by = 10)) +
+  scale_y_continuous(limits = c(0,600), breaks = seq(0,600, by = 100))
+  ggtitle("Distribuição Compras nos últimos 60 dias")
+
+
+#Probabilidade de Lift
+  
+  ggplot(data = clientes, aes(x = proba)) + 
+    geom_histogram(color = "white",fill = "dodgerblue", position = "dodge") +
+    xlab("Probabilidade") +
+    ylab("Frequencia")
+
+
 # Analise BIVARIADA CAIO -------------------------------------------------------
 
 
