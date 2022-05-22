@@ -44,8 +44,8 @@ proba <- ggplot(clientes, aes(x=persona, fill=persona)) +
 proba
 
 
-engaj <- ggplot(clientes, aes(x=engajamento, fill=persona, )) +
-  geom_bar() +
+engaj <- ggplot(clientes, aes(x=engajamento)) +
+  geom_histogram(color = "white",fill = "dodgerblue") +
   theme(text = element_text(size = 14), axis.text = element_text(size = 14))
 engaj
 

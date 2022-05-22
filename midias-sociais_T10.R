@@ -52,14 +52,37 @@ View(twitters)
 
 
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# 1) (Descritiva) - Tokenização, Contagem de Palavras
+#Remoção das variáveis não pertinentes para a análise
+df2 <- tweeters %>% select(-insult,- target, -date)
 
-# (Amauri)
-# 1)Tratar a data (criar variável ano)
+#Remoção de tweets duplicados
+df4 <- unique(df2)
+nrow(df4)
+df4 <- df4 %>% select(-date)
 
-# (CAIO)
-# 2) (Descritiva) - Tokenização, Contagem de Palavras
-# Analise-1: geral
-# Analise-2: por ano (2014 - 2021)
+#Contagem de palavras, ranking e gráfico
+df4 %>% unnest_tokens(input=tweet, output=word,
+                      to_lower=TRUE, drop=TRUE, token="words")%>%
+  mutate(word = str_extract(word, regex("[a-z']+"))) %>%
+  filter(!is.na(word)) %>% select(word) %>%
+  count(word) %>% anti_join(stop_words, by=c("word"="word")) %>%
+  top_n(10, n) %>% arrange(desc(n)) %>%
+  ggplot(aes(x=reorder(word,n), y=n)) + 
+  geom_col() + coord_flip()
+
+#Contagem de palavras, ranking e gráfico - por ano
+df4 %>% group_by(year) %>% unnest_tokens(input=tweet, output=word,
+                                         to_lower=TRUE, drop=TRUE, token="words")%>%
+  mutate(word = str_extract(word, regex("[a-z']+"))) %>%
+  filter(!is.na(word)) %>% 
+  count(word) %>% anti_join(stop_words, by=c("word"="word")) %>%
+  top_n(10, n) %>% arrange(desc(n)) %>%
+  ggplot(aes(x=reorder(word,n), y=n)) + 
+  geom_col(aes(fill = as.factor(year))) +
+  coord_flip() +
+  facet_wrap(~year, scales="free_y")+
+  theme(legend.position="none")
 
 
 # 3) (Aprendiz.N.Superv.) - Análise de Sentimento.
@@ -139,9 +162,26 @@ twitters_ano %>% ggplot(aes(x = nrow(twitters_ano), y = sentimento, color = row)
 twitters_ano %>% ggplot(aes(x = year, y = sentimento, color = row)) +geom_col()
 
 
-# (Marcia)
 # 4) (Aprendiz.N.Superv.) - Lei de Zipf. TF-IDF
-# Analise-1: geral
+
+
+# Ajuste na base de dados
+dataFrame <- dataFrame %>% mutate(insult = str_to_lower(insult)) 
+dataFrame <- dataFrame %>% mutate(insult = str_extract(insult, regex("[a-z']+"))) #linha nao utilizada para a análise 1
+
+#calculando a TF  dos insultos e gerando o ranking
+dataFrame <- dataFrame %>% count(insult) %>%
+   mutate(tf = n/sum(n)) %>% 
+   arrange(desc(n)) %>% 
+   select(insult,tf) %>%
+   mutate(rank = row_number())
+
+#Gerando o gr�fico
+dataFrame %>% ggplot(aes(x=log10(rank), y=log10(tf))) +
+  geom_line(aes())
+
+#Modelo de Correla��o entre as palavras
+lm(data=dataFrame, formula = log10(tf) ~ log10(rank)) %>% summary()
 
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # 5) (Aprendiz.N.Superv.) - Topic Modeling (Clusterização de Documentos e Palavras)
