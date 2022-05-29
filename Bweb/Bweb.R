@@ -634,6 +634,174 @@ View(experi_100cli_T2)
 
 # ::::Analise dos resultados
 
+# Leitura DF resultados teste3
+clientesV3 = read.csv("api_experiment_data_v3_794clientes.csv", sep = ",", stringsAsFactors = TRUE)
+summary(clientesV3)
+str(clientes)
+View(clientes)
+
+#join resultados T3 com dados clientes
+clientesV3.2 <- left_join(clientesV3, clientes, by = "id_cliente")
+
+#médias controle x tratamento
+clientesV3.2 %>%
+  group_by(grupo) %>%
+  summarize(mean_vendas = mean(vendas, na.rm = TRUE))
+
+
+# Analise BIVARIADA CAIO------------------------------------------------------
+# GRUPO CONTROLE::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+#cria sud df T3 controle
+clientesV3.2_contrl <- clientesV3.2 %>% filter(grupo == "controle")
+
+
+#gráficos análise resultados T3 por personas
+
+c_persona_vend_bar <- ggplot(clientesV3.2_contrl, aes(x=persona, y=vendas, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Controle Total Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_bar
+
+c_persona_vend_box <-ggplot(clientesV3.2_contrl, aes(x=persona, y=vendas, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Controle Média Vendas")+
+  theme(legend.position="none")
+  
+c_persona_vend_box
+
+
+grid.arrange(c_persona_vend_bar, c_persona_vend_box, ncol=2)
+
+
+
+# GRUPO TRATAMENTO::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+#cria sud df T3 controle
+clientesV3.2_trat <- clientesV3.2 %>% filter(grupo == "tratamento")
+
+
+#gráficos análise resultados T3 por personas
+
+c_persona_vend_bar <- ggplot(clientesV3.2_trat, aes(x=persona, y=vendas, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Tratamento Total Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_bar
+
+c_persona_vend_box <-ggplot(clientesV3.2_trat, aes(x=persona, y=vendas, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Tratamento Média Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_box
+
+
+grid.arrange(c_persona_vend_bar, c_persona_vend_box, ncol=2)
+
+
+#médias controle x tratamento
+clientesV3 %>%
+  select(grupo, vendas) %>% 
+  group_by(grupo) %>%
+  summarize(mean_vendas = mean(vendas, na.rm = TRUE))
+
+
+#################################################################################
+##ANALISES RESULTADOS GERAIS
+
+# Leitura DF resultados GERAIS
+clientesv4 = read.csv("api_experiment_data_all-results.csv", sep = ",", stringsAsFactors = TRUE)
+summary(clientesv4)
+str(clientes)
+View(clientes)
+
+#join resultados T3 com dados clientes
+clientesV4.2 <- left_join(clientesv4, clientes, by = "id_cliente")
+
+
+
+# Analise BIVARIADA CAIO------------------------------------------------------
+# GRUPO CONTROLE::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+#cria sud df T3 controle
+clientesV4.2_contrl <- clientesV4.2 %>% filter(grupo == "controle")
+
+
+#gráficos análise resultados T3 por personas
+
+c_persona_vend_bar <- ggplot(clientesV4.2_contrl, aes(x=persona, y=vendas, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Controle Total Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_bar
+
+c_persona_vend_box <-ggplot(clientesV4.2_contrl, aes(x=persona, y=vendas, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Controle Média Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_box
+
+
+grid.arrange(c_persona_vend_bar, c_persona_vend_box, ncol=2)
+
+
+
+# GRUPO TRATAMENTO::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+#cria sud df T3 controle
+clientesV4.2_trat <- clientesV4.2 %>% filter(grupo == "tratamento")
+
+
+#gráficos análise resultados T3 por personas
+
+c_persona_vend_bar <- ggplot(clientesV4.2_trat, aes(x=persona, y=vendas, fill=persona)) +
+  geom_bar(stat = "identity")+
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Tratamento Total Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_bar
+
+c_persona_vend_box <-ggplot(clientesV4.2_trat, aes(x=persona, y=vendas, fill=persona)) +
+  geom_boxplot() +
+  theme(text = element_text(size = 14), axis.text = element_text(size = 14))+
+  ggtitle("Tratamento Média Vendas")+
+  theme(legend.position="none")
+
+c_persona_vend_box
+
+
+grid.arrange(c_persona_vend_bar, c_persona_vend_box, ncol=2)
+
+
+#médias controle x tratamento
+clientesV4.2 %>%
+  select(grupo, vendas) %>% 
+  group_by(grupo) %>%
+  summarize(mean_vendas = mean(vendas, na.rm = TRUE))
+
+
+#médias controle x tratamento
+clientesV4.2 %>%
+  select(grupo, persona, vendas) %>% 
+  group_by(persona, grupo) %>%
+  summarize(mean_vendas = mean(vendas, na.rm = TRUE))
 
 
 
